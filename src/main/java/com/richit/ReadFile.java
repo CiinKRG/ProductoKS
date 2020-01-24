@@ -102,13 +102,11 @@ public class ReadFile {
 
         //Txt to JSON
 
-        //BufferedReader csvFile= new BufferedReader(new FileReader("/home/cynthia/Documentos/ProductoKS/test2.txt"));
-        Reader in = new FileReader("/home/cynthia/Documentos/ProductoKS/test2.txt");
-        Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(in);
-
-        String resul = "ID_SEQ ID_ACCESS RAMO SUBRAMO TIPO_TRAMITE CARPETA";
+        BufferedReader csvFile= new BufferedReader(new FileReader("/home/cynthia/Documentos/ProductoKS/test2.txt"));
+        String header = csvFile.readLine();
 
         int i,cmax=0,cmin=0,cequal=0,aux=0;
+        int a=0,b=0,count=0;
         String auxd="";
         String [] listd = {",",";","|"," ","\t","-"};
         Object [][] matrixd = new Object[listd.length][3];
@@ -119,22 +117,19 @@ public class ReadFile {
             matrixd[i][2]=listd.length-i;
         }
 
-        for (i=0; i<listd.length;i++) matrixd[i][1] = StringUtils.countMatches(resul, listd[i]);
+        for (i=0; i<listd.length;i++) matrixd[i][1] = StringUtils.countMatches(header, listd[i]);
 
         for (i=0;i<listd.length;i++){
             if((Integer)matrixd[i][1]==0) cmin=cmin;
             else {
                 cequal++;
                 auxd = (String) matrixd[i][0];
+                break;
             }
         }
 
         if (cequal==0) System.out.println("El header solo tiene un campo");
-        else if (cequal==1) System.out.println("El header es: \""+auxd+"\"");
-        else {
-            
-        }
-
+        else if (cequal>=1) System.out.println("El header es: \""+auxd+"\"");
 
         //for (CSVRecord record: records) System.out.println(record);
 
