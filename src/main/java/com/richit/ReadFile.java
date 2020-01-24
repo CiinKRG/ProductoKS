@@ -1,5 +1,6 @@
 package com.richit;
 
+import java.nio.file.Path;
 import java.util.*;
 import java.lang.*;
 import java.math.*;
@@ -14,6 +15,7 @@ import java.nio.charset.*;
 import java.util.Collections;
 
 import com.fasterxml.jackson.dataformat.csv.CsvParser;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.kafka.common.protocol.types.Field;
 import org.apache.spark.InternalAccumulator;
@@ -28,8 +30,11 @@ import java.io.IOException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.json.JSONTokener;
 import org.omg.PortableInterceptor.ServerRequestInfo;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -44,14 +49,12 @@ public class ReadFile {
         //Enviar a topico
         //Los errores se envían a otro tópico con un campo extra que indique el error
         //Detectar tipo de separador en csv
-        //------------------------------------------------------------------------------
 
         //---------------------------------------------------------
         //Detectar tipo de archivo
         //----------------------------------------------------------
-
         /*
-        File inputFile = new File("/home/cynthia/Documentos/ProductoKS/test.csv");
+        File inputFile = new File("/home/cynthia/Documentos/ProductoKS/test2.txt");
         String type = new Tika().detect(inputFile);
         System.out.println(type);
         */
@@ -59,11 +62,11 @@ public class ReadFile {
         //---------------------------------------------------------
         //Leer archivo
         //----------------------------------------------------------
-
         //Salida en detección de archivo: text/csv
         //Leer CSV
+        //Misma función para leer txt y Json
         /*
-        Path logFile = Paths.get("/home/cynthia/Documentos/ProductoKS/test.csv");
+        Path logFile = Paths.get("/home/cynthia/Documentos/ProductoKS/test1.json");
         try (BufferedReader reader =
                      Files.newBufferedReader(logFile, StandardCharsets.UTF_8)) {
             String line;
@@ -73,14 +76,15 @@ public class ReadFile {
         } catch (Exception e) {
             e.printStackTrace();
         }
-         */
+        */
 
         //---------------------------------------------------------
-        //Convertir a JSON
+        //Convertir a JSON con header
         //----------------------------------------------------------
 
         //CSV to JSON
-        /*BufferedReader csvFile= new BufferedReader(new FileReader("/home/cynthia/Documentos/ProductoKS/test.csv"));
+        /*
+        BufferedReader csvFile= new BufferedReader(new FileReader("/home/cynthia/Documentos/ProductoKS/test2.txt"));
 
         String fileContent = csvFile.readLine();
         String fileContent2= fileContent;
@@ -96,10 +100,48 @@ public class ReadFile {
         System.out.println(array.toString(2)); //pretty print with indent
         */
 
+        //Txt to JSON
+
+        //BufferedReader csvFile= new BufferedReader(new FileReader("/home/cynthia/Documentos/ProductoKS/test2.txt"));
+        Reader in = new FileReader("/home/cynthia/Documentos/ProductoKS/test2.txt");
+        Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(in);
+
+        String resul = "ID_SEQ ID_ACCESS RAMO SUBRAMO TIPO_TRAMITE CARPETA";
+
+        int i,cmax=0,cmin=0,cequal=0,aux=0;
+        String auxd="";
+        String [] listd = {",",";","|"," ","\t","-"};
+        Object [][] matrixd = new Object[listd.length][3];
+
+        for(i=0;i<listd.length;i++){
+            matrixd[i][0]=listd[i];
+            matrixd[i][1]=0;
+            matrixd[i][2]=listd.length-i;
+        }
+
+        for (i=0; i<listd.length;i++) matrixd[i][1] = StringUtils.countMatches(resul, listd[i]);
+
+        for (i=0;i<listd.length;i++){
+            if((Integer)matrixd[i][1]==0) cmin=cmin;
+            else {
+                cequal++;
+                auxd = (String) matrixd[i][0];
+            }
+        }
+
+        if (cequal==0) System.out.println("El header solo tiene un campo");
+        else if (cequal==1) System.out.println("El header es: \""+auxd+"\"");
+        else {
+            
+        }
+
+
+        //for (CSVRecord record: records) System.out.println(record);
+
         //---------------------------------------------------------
         //Detectar delimitador
         //----------------------------------------------------------
-
+        /*
         //Indica cuantos campos del header son
         int i, a=0, b=0, cmax = 0, cmin = 0, cequal = 0, c_one=0;
         String dd = ""; //Define el delimitador de los datos entrantes
@@ -194,18 +236,18 @@ public class ReadFile {
                 if (a > b) System.out.println("El delimitador es: \"" + dd + "\"");
                 else System.out.println("Mas campos de los esperados");
             }}
-
+        */
         //---------------------------------------------------------
         //Convertir a JSON
         //----------------------------------------------------------
         //Stream to JSON
-
+        /*
         String x="";
         if(dd!=",") x=ex15.replace(dd,",");
 
         String fileContent2 = header + "\n" + x;
         JSONArray array = CDL.toJSONArray(fileContent2);
         System.out.println(array.toString(2));
-
+        */
     }
 }
