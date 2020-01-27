@@ -35,6 +35,7 @@ public class InputStream {
         String ex15 = "abc dfdf de la defd;24;col ssjd;del-jdjd";   //Coincide (jerarquía)
         String ex16 = "a";                                          //Menos campos
 
+        //Escoger el dato de prueba
         String data = ex15;
 
         //Regresa delimitador, un 1 si son menos campos y un 2 si son más campos
@@ -49,6 +50,8 @@ public class InputStream {
                 JSONArray array = CDL.toJSONArray(fc);
                 System.out.println(array.toString(2));
             } else {
+                //Cambia el delimitador del header por comas
+                if (dh!=",") header=header.replace(dh,",");
                 //System.out.println("El delimitador es \"" + dd + "\"");
                 if (dd != ",") data = data.replace(dd, ",");
                 String fc = header + "\n" + data;
