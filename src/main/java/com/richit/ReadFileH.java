@@ -14,62 +14,40 @@ import static com.richit.GetValidations.*;
 public class ReadFileH {
     public static void main(String[] args) throws IOException {
         //Detectar tipo de archivo
-        String file = "/home/cynthia/Documentos/ProductoKS/test3.txt";
+        String file = "/home/cynthia/Documentos/ProductoKS/files/test1fh.txt";
         File inputFile = new File(file);
         String type = new Tika().detect(inputFile);
+
         JSONArray array;
+        String header,delim,fileC,fileC2;
+        BufferedReader fileR= new BufferedReader(new FileReader(file)); //Lectura del archivo
 
-        //Depende del tipo de archivo se procesa
-        switch (type){
-            case "text/csv":
-                BufferedReader csvFile= new BufferedReader(new FileReader(file));
-                String fileContent = csvFile.readLine();
-                String fileContent2= fileContent;
+        System.out.println(type);
 
-                while (fileContent !=null){
-                    fileContent=csvFile.readLine();
-                    if (fileContent != null){
-                        fileContent2=fileContent2+"\n"+fileContent;
-                    }
+        if ((type.equals("text/csv")) || (type.equals("text/plain"))){
+            header = fileR.readLine();
+            delim = FindDelimH(header);
+
+            if (delim!=",") header=header.replace(delim,",");
+            fileC = header;
+            fileC2 = fileC;
+
+            while (fileC !=null){
+                fileC=fileR.readLine();
+                if (fileC != null){
+                    if (delim!=",") fileC=fileC.replace(delim,",");
+                    fileC2=fileC2+"\n"+fileC;
                 }
-
-                array = CDL.toJSONArray(fileContent2);
-                System.out.println(array.toString(2));
-                System.out.println(isJson(array.toString()));
-                break;
-
-            case "text/plain":
-                BufferedReader txtFile= new BufferedReader(new FileReader(file));
-                String header = txtFile.readLine();
-                String delim =FindDelimH(header);
-                String fileC = header, fileC2 = fileC;
-
-                if (delim!=",") header=header.replace(delim,",");
-
-                while (fileC !=null){
-                    fileC=txtFile.readLine();
-                    if (fileC != null){
-                        fileC=fileC.replace(delim,",");
-                        fileC2=fileC2+"\n"+fileC;
-                    }
-                }
-
-                array = CDL.toJSONArray(fileC2);
-                System.out.println(array.toString(2));
-                System.out.println(isJson(array.toString()));
-                break;
-
-            case "application/json":
-                BufferedReader jsonFile= new BufferedReader(new FileReader(file));
-                String message = org.apache.commons.io.IOUtils.toString(jsonFile);
-
-                System.out.println(message);
-                System.out.println(isJson(message));
-                break;
-
-            default:
-                throw new IllegalStateException("Unexpected value: " + type);
-
+            }
+            array = CDL.toJSONArray(fileC2);
+            System.out.println(array.toString(2));
+            System.out.println(isJson(array.toString()));
         }
+        else if (type.equals("application/json")){ //Valida la estructura
+            String message = org.apache.commons.io.IOUtils.toString(fileR);
+            System.out.println(message);
+            System.out.println(isJson(message));
+        }
+
     }
 }
