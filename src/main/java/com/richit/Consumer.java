@@ -1,42 +1,44 @@
 package com.richit;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.serialization.StringDeserializer;
 
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Properties;
 
 public class Consumer {
+    static Properties properties;
     public static void main(String[] args) {
 
-        String bootstrapServers = "localhost:9092";
-        String groupId = "g2";
-        String topic = "C";
+        String filenameprops = args[0];
+        GetPropertiesKafka getproperties = new GetPropertiesKafka();
+        properties = getproperties.GetKafkaValues(filenameprops);
 
-        //Create Consumer configs
-        Properties properties = new Properties();
-        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, "ap1");
-        properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,"true");
-        properties.setProperty(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG,"1000");
-        properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,StringDeserializer.class.getName());
+        Properties props = new Properties();
+
+        String topic = properties.getProperty("topicNamec");
+        String poll = properties.getProperty("pollc");
+
+        props.put("bootstrap.servers", properties.getProperty("bootstrap.serversc"));
+        props.put("group.id", properties.getProperty("group.idc"));
+        props.put("enable.auto.commit", properties.getProperty("enable.commitc"));
+        props.put("auto.commit.interval.ms", properties.getProperty("commit.intervalc"));
+        props.put("client.id", properties.getProperty("client.idc"));
+        props.put("auto.offset.reset",properties.getProperty("auto.offset.resetc"));
+        props.put("key.deserializer", properties.getProperty("key.deserializerc"));
+        props.put("value.deserializer",properties.getProperty("value.deserializerc"));
 
         //Create Consumer
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(properties);
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(props);
 
         //Subscribe Consumer to Topic(s)
         consumer.subscribe(Arrays.asList(topic));
 
         //Poll for new data
         while (true){
-            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(Long.parseLong(poll)));
             //process(records); application-specific processing
             for (ConsumerRecord<String, String> record : records){
                 System.out.println(record.value());
