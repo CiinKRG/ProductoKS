@@ -14,16 +14,19 @@ public class Consumer {
     public static void main(String[] args) {
 
         String bootstrapServers = "localhost:9092";
-        String groupId = "t2";
-        String topic = "test";
+        String groupId = "g2";
+        String topic = "C";
 
         //Create Consumer configs
         Properties properties = new Properties();
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, "ap1");
+        properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,"true");
+        properties.setProperty(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG,"1000");
+        properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,StringDeserializer.class.getName());
 
         //Create Consumer
         KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(properties);
@@ -34,12 +37,11 @@ public class Consumer {
         //Poll for new data
         while (true){
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
-
+            //process(records); application-specific processing
             for (ConsumerRecord<String, String> record : records){
                 System.out.println(record.value());
             }
         }
-
 
     }
 }
