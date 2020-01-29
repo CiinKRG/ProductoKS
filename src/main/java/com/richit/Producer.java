@@ -27,7 +27,6 @@ public class Producer {
         props.put("key.serializer", properties.getProperty("key.serializerp"));
         props.put("value.serializer", properties.getProperty("value.serializerp"));
 
-        System.out.println("After properties");
         //Create the Producer
         KafkaProducer<String,String> producer = new KafkaProducer<String, String>(props);
 
