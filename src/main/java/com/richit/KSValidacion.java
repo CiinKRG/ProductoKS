@@ -31,6 +31,7 @@ public class KSValidacion {
         String topicPE = properties.getProperty("topicNameError"); //Topic Producer Error
         String poll = properties.getProperty("pollc");
         String header = properties.getProperty("header");
+        String delim = properties.getProperty("delimitador");
 
         propsC.put("bootstrap.servers", properties.getProperty("bootstrap.serversc"));
         propsC.put("group.id", properties.getProperty("group.idc"));
@@ -60,6 +61,7 @@ public class KSValidacion {
         String dh = FindDelimH(header);
         String data,dd;
         int fields = StringUtils.countMatches(header, dh); //Cuantas veces el delimitador se encuentra en el header
+
 
         //Poll for new data
         while (true){
