@@ -65,30 +65,24 @@ public class KSValidacion {
         while (true){
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(Long.parseLong(poll)));
             for (ConsumerRecord<String, String> record : records){
+                System.out.println("Record.value = "+record.value());
                 data = record.value();
                 dd = FindDelimD(data, fields);
                 //Convierte a JSON si coincide
                 if (dd == "1") { //Envio a topico de error
-                    //recordP = new ProducerRecord<String, String>(topicPE,record.key(),data + ", Menos campos vs header");
+                    System.out.println("Topic Error");
                     producer.send(new ProducerRecord<String, String>(topicPE,record.key(),data + ", Menos campos vs header"));
-                    //producer.flush();
-                    producer.close();
                 }
                 else if (dd == "2") { //Envio a topico de error
-                    //recordP = new ProducerRecord<String, String>(topicPE,record.key(),data + ", Mas campos vs header");
+                    System.out.println("Topic error");
                     producer.send(new ProducerRecord<String, String>(topicPE,record.key(),data + ", Mas campos vs header"));
-                    //producer.flush();
-                    producer.close();
                 }
                 else {
                     if (fields == 0) { //Toma el caso de un campo
                         String fc = header + "\n" + data;
                         JSONArray array = CDL.toJSONArray(fc);
                         System.out.println(array.toString(2));
-                        //recordP = new ProducerRecord<String, String>(topicP,record.key(),data);
-                        //producer.send(recordP);
-                        //producer.flush();
-                        //producer.close();
+                        producer.send(new ProducerRecord<String, String>(topicP,record.key(),array.toString()));
                     } else {
                         //Cambia el delimitador del header por comas
                         if (dh!=",") header=header.replace(dh,",");
@@ -96,10 +90,7 @@ public class KSValidacion {
                         String fc = header + "\n" + data;
                         JSONArray array = CDL.toJSONArray(fc);
                         System.out.println(array.toString(2));
-                        //recordP = new ProducerRecord<String, String>(topicP,record.key(),data);
-                        //producer.send(recordP);
-                        //producer.flush();
-                        //producer.close();
+                        producer.send(new ProducerRecord<String, String>(topicP,record.key(),array.toString()));
                     }
                 }
             }
