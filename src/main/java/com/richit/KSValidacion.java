@@ -65,7 +65,7 @@ public class KSValidacion {
 
         //Poll for new data
         while (true){
-            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(Long.parseLong(poll)));
+            /*ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(Long.parseLong(poll)));
             for (ConsumerRecord<String, String> record : records){
                 System.out.println("Record.value = "+record.value());
                 data = record.value();
@@ -95,7 +95,7 @@ public class KSValidacion {
                         producer.send(new ProducerRecord<String, String>(topicP,record.key(),array.toString()));
                     }
                 }
-            }
+            }*/
         }
     }
 }

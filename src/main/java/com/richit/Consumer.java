@@ -37,13 +37,13 @@ public class Consumer {
         consumer.subscribe(Arrays.asList(topic));
 
         //Poll for new data
-        while (true){
-            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(Long.parseLong(poll)));
+        /*while (true){
+            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(properties.getProperty("pollc")));
             //process(records); application-specific processing
             for (ConsumerRecord<String, String> record : records){
                 System.out.println(record.value());
             }
-        }
+        }*/
 
     }
 }

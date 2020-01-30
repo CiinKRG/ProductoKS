@@ -1,11 +1,9 @@
 package com.richit;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.kafka.common.protocol.types.Field;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import scala.math.Ordering;
 
 public class GetValidations {
     //Metodo para encontrar el delimitador en los Header
@@ -115,20 +113,5 @@ public class GetValidations {
             }
         }
         return true;
-    }
-    //Se conoce el delimitador
-    //Metodo para encontrar el delimitador en los Header
-    public static Integer FindDelimH2(String header, String delim){
-        int dh;
-        dh = StringUtils.countMatches(header, delim);
-        return dh;
-    }
-
-    //Metodo para encontrar el delimitador en los datos
-    public static Integer FindDelimD2(String stream, int fields, String delim){
-        int dd;
-        //Guardar en un arreglo las veces que se repite cada valor de los delimitadores
-        dd = StringUtils.countMatches(stream, delim);
-        return dd;
     }
 }
