@@ -42,12 +42,24 @@ El método *isJson* recibe un string y valida si es JSON.
 
 ### InputStream
 
+Clase donde se inserta un dato y header, en la cual si no coincide indica si es por tener más o menos campos que el header y en caso de coincidir se convierte a JSON; hace uso de los métodos *FindDelimH* y *FindDelimD* de **GetValidations**
+
 ### KSValidacion
+
+Se crea un Consumer a un tópico de Kafka, se procesan con los datos aplicando lo que se creo en la clase **InputStreams** y se manda mediante un Producer a dos tópicos diferentes; dependiendo si cumple o no con el número de campos del header asignado se convierte a JSON y se envía a un tópico, de lo contrarios se agrega al final del valor del mensaje la razón (si tenía menos o más campos) y se envía a un tópico de error.
 
 ### KSValidacion2
 
+A partir de la clase anterior se crea un Kafka Stream en el que mediante un fork se envía a dos diferentes tópicos.
+
 ### Producer
+
+Producer sencillo a un tópico de Kafka, toma ciertos parámetros del archivo *kstream.properties* como el tópico, group id, IP y puerto, entre otros.
 
 ### ReadFile
 
+Clase en la que se lee un archivo sin header, detecta el tipo de archivo, compara el número de campos en el header contra el número de campos tomando la primera línea del archivo, se hace uso de los métodos *FindDelimH* y *FindDelimD* de la clase **InputStreams**; en caso de coincidir asigna el header y se convierten los datos a JSON.
+
 ### ReadFileH
+
+Clase en la que se lee un archivo que contiene header, detecta el tipo de archivo, en caso de ser CSV o TXT busca el delimitador usando el método *FindDelimH* lo reemplaza por *","* y convierte a JSON; si el archivo es JSON lo valida usando el método *isJson* de la clase **InputStreams**
